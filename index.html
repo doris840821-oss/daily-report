@@ -211,6 +211,19 @@
 
 <!-- 老闆頁面 -->
 <div id="page-boss" class="page">
+
+  <!-- 密碼鎖畫面 -->
+  <div id="boss-lock" style="max-width:340px; margin: 60px auto; text-align:center;">
+    <div style="font-size:48px; margin-bottom:16px;">🔒</div>
+    <h2 style="font-size:20px; margin-bottom:8px;">管理後台</h2>
+    <p style="font-size:13px; color:var(--text-sub); margin-bottom:24px;">請輸入密碼以進入</p>
+    <input type="password" id="boss-password" placeholder="請輸入密碼" style="text-align:center; font-size:16px; letter-spacing:0.1em; margin-bottom:12px;" onkeydown="if(event.key==='Enter') checkPassword()">
+    <div id="pw-error" style="color:var(--danger); font-size:13px; margin-bottom:12px; display:none;">密碼錯誤，請再試一次</div>
+    <button class="btn btn-primary" style="width:100%;" onclick="checkPassword()">進入後台</button>
+  </div>
+
+  <!-- 後台內容（預設隱藏） -->
+  <div id="boss-content" style="display:none;">
   <div class="page-header">
     <h2>管理後台</h2>
     <p>所有員工的工作日報記錄</p>
@@ -251,6 +264,7 @@
     <div class="card-title">日報記錄</div>
     <div id="table-area"><div class="loading">載入中...</div></div>
   </div>
+  </div> <!-- end boss-content -->
 </div>
 
 <script>
@@ -416,12 +430,31 @@ function clearFilter() {
   renderTable(allReports);
 }
 
+function checkPassword() {
+  const pw = document.getElementById('boss-password').value;
+  if (pw === '0981516186') {
+    document.getElementById('boss-lock').style.display = 'none';
+    document.getElementById('boss-content').style.display = 'block';
+    loadReports();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('boss-password').value = '';
+    document.getElementById('boss-password').focus();
+  }
+}
+
 function switchPage(p, btn) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
   document.getElementById('page-' + p).classList.add('active');
   btn.classList.add('active');
-  if (p === 'boss') loadReports();
+  if (p === 'boss') {
+    // reset lock each time
+    document.getElementById('boss-lock').style.display = 'block';
+    document.getElementById('boss-content').style.display = 'none';
+    document.getElementById('boss-password').value = '';
+    document.getElementById('pw-error').style.display = 'none';
+  }
 }
 
 init();
